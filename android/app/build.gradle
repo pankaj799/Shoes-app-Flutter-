@@ -1,0 +1,113 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new FileNotFoundException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+android {
+    compileSdkVersion 28
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.example.my_first_project"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+//    annotationProcessor "android.arch.lifecycle:common-java8:1.1.1"
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+
+//    def lifecycle_version = "2.2.0"
+//    def arch_version = "2.1.0"
+//
+//    // ViewModel
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+//    // LiveData
+//    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+//    // Lifecycles only (without ViewModel or LiveData)
+//    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+//
+//    // Saved state module for ViewModel
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+//
+//    // Annotation processor
+//    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+//    // alternately - if using Java8, use the following instead of lifecycle-compiler
+//    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+//
+//    // optional - helpers for implementing LifecycleOwner in a Service
+//    implementation "androidx.lifecycle:lifecycle-service:$lifecycle_version"
+//
+//    // optional - ProcessLifecycleOwner provides a lifecycle for the whole application process
+//    implementation "androidx.lifecycle:lifecycle-process:$lifecycle_version"
+//
+//    // optional - ReactiveStreams support for LiveData
+//    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version"
+//
+//    // optional - Test helpers for LiveData
+//    testImplementation "androidx.arch.core:core-testing:$arch_version"
+}
+
+allprojects {
+    repositories {
+        google()
+
+        // If you're using a version of Gradle lower than 4.1, you must instead use:
+        // maven {
+        //     url 'https://maven.google.com'
+        // }
+        // An alternative URL is 'https://dl.google.com/dl/android/maven2/'
+    }
+}
